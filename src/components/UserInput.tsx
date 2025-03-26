@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import localStorageContext from './Provider';
 
 const UserInput: React.FC = () => {
+    const localStoragectx = useContext(localStorageContext)
     // Task object
     interface task {
-        taskValue: string,
+        name: string,
         timeStamp: string,
-        id: number
+        id: number,
+        status: string
     }
     const [Task, setTask] = useState<task>({
-        taskValue: "",
+        name: "",
         timeStamp: new Date().toISOString(),
         id: Math.floor(Math.random() * 100000),
+        status: "Incomplete",
     });
     // Input handler
     const InputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,8 +24,10 @@ const UserInput: React.FC = () => {
         }));      
     }
     // Add a task
+    const { updateData } = localStoragectx;
+    
     const AddTask = () => {
-        if (!Task.taskValue) {
+        if (!Task.name) {
             alert("Please input valid field!");
         } else {
             let tasks = JSON.parse(localStorage.getItem("Tasks") || "[]");
@@ -31,6 +37,13 @@ const UserInput: React.FC = () => {
                 ...prevTask, 
                 taskValue: "",
             }));
+            const newTask = {
+                name: "",
+                timeStamp: new Date().toISOString(),
+                status: "incomplete",
+                id: Math.floor(Math.random() * 100000),
+            }
+            updateData(newTask);
         }
     }
     // Clear input field
@@ -46,11 +59,11 @@ const UserInput: React.FC = () => {
             <div id="user-input-container">
                 <div className='flex flex-row items-center gap-0.5 w-full border border-stone-700 rounded-lg py-1.5 px-1.5'>
                     <span className='flex'>
-                        <span className="flex material-symbols-outlined">
+                        <span className="flex material-symbols-outlined text-stone-500">
                             add
                         </span>
                     </span>
-                    <input type="text" placeholder='Add New Task..' className='outline-none w-full py-0.5 px-1.5 rounded-lg font-medium' onChange={InputHandler} value={Task.taskValue}/>
+                    <input type="text" placeholder='Add New Task..' className='outline-none w-full py-0.5 px-1.5 rounded-lg font-medium' onChange={InputHandler} value={Task.name}/>
                 </div>
             </div>
             <div className='flex flex-row gap-2.5 w-full mt-4'>
