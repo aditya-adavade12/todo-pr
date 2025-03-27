@@ -1,18 +1,16 @@
-import React, { useContext, useState } from 'react'
-import localStorageContext from './Provider';
+import React, { useState } from 'react'
 
 const UserInput: React.FC = () => {
-    const localStoragectx = useContext(localStorageContext)
     // Task object
     interface task {
-        name: string,
+        taskName: string,
         timeStamp: string,
         id: number,
         status: string
     }
     const [Task, setTask] = useState<task>({
-        name: "",
-        timeStamp: new Date().toISOString(),
+        taskName: "",
+        timeStamp: new Date().toUTCString(),
         id: Math.floor(Math.random() * 100000),
         status: "Incomplete",
     });
@@ -20,14 +18,11 @@ const UserInput: React.FC = () => {
     const InputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTask((prevTask) => ({
             ...prevTask,
-            taskValue: e.target.value,
+            taskName: e.target.value,
         }));      
     }
-    // Add a task
-    const { updateData } = localStoragectx;
-    
     const AddTask = () => {
-        if (!Task.name) {
+        if (!Task.taskName) {
             alert("Please input valid field!");
         } else {
             let tasks = JSON.parse(localStorage.getItem("Tasks") || "[]");
@@ -35,22 +30,16 @@ const UserInput: React.FC = () => {
             localStorage.setItem("Tasks", JSON.stringify(tasks));
             setTask((prevTask) => ({
                 ...prevTask, 
-                taskValue: "",
+                taskName: "",
             }));
-            const newTask = {
-                name: "",
-                timeStamp: new Date().toISOString(),
-                status: "incomplete",
-                id: Math.floor(Math.random() * 100000),
-            }
-            updateData(newTask);
+            window.location.reload();
         }
     }
     // Clear input field
     const ClearInput = () => {
         setTask((prevTask) => ({
             ...prevTask, 
-            taskValue: "",
+            taskName: "",
         }));
     };
     return (
@@ -63,7 +52,7 @@ const UserInput: React.FC = () => {
                             add
                         </span>
                     </span>
-                    <input type="text" placeholder='Add New Task..' className='outline-none w-full py-0.5 px-1.5 rounded-lg font-medium' onChange={InputHandler} value={Task.name}/>
+                    <input type="text" placeholder='Add New Task..' className='outline-none w-full py-0.5 px-1.5 rounded-lg font-medium' onChange={InputHandler} value={Task.taskName}/>
                 </div>
             </div>
             <div className='flex flex-row gap-2.5 w-full mt-4'>
