@@ -1,10 +1,14 @@
-import React, { useContext } from 'react'
-import localStorageContext from './Provider';
+import React, { useEffect, useRef, useState } from 'react'
 
 const ShowTasks: React.FC = () => {
-    // Get Data from provider
-    const data = useContext(localStorageContext);
-    console.log(data);
+    const taskName = useRef(null);
+    interface taskType {
+        taskName: string;
+        timeStamp: string;
+        id: number;
+        status: string;
+    }
+    const [Task, setTask] = useState<taskType[]>([]);
     // Complete task
     const completeTask = () => {
         alert("complete");
@@ -13,28 +17,44 @@ const ShowTasks: React.FC = () => {
     const removeTask = () => {
         alert("delete");
     }
+    // Load data from localstorage
+    useEffect(() => {
+        const storedTasks = JSON.parse(localStorage.getItem("Tasks") || "[]");
+        if (storedTasks) {
+            setTask(storedTasks);
+        }
+    }, []);
     return (
         <div className='w-[50vw] mx-auto mt-20 max-sm:w-[90vw]'>
             {/* Users Tasks */}
             <div id="show-tasks-container">
                 <h2 className='text-2xl font-semibold'>Your Tasks</h2>
-                <div id="task-box" className='mt-4'>
-                    {/* Tasks */}
-                    <div id="task" className='border border-stone-700 flex flex-row items-center justify-between gap-1.5 w-full py-2 px-2 rounded-lg'>
-                        <div>
-                        <p className='line-clamp-1 w-full text-wrap'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis eum repellendus nemo quos neque ut quisquam, numquam accusantium officiis voluptas ea id mollitia commodi nisi provident unde possimus quae. Exercitationem nihil iure, in voluptas natus repellendus impedit voluptatum maiores consequatur fuga unde vitae distinctio ad vel quos, quisquam est sapiente?</p>
-                        <p className='text-stone-500 font-semibold text-sm'>23 March 2052</p>
-                        </div>
-                        <div className='flex flex-row items-center gap-1.5'>
-                            <button onClick={completeTask} className='flex text-green-500 hover:bg-stone-800 p-0.5 rounded-lg cursor-pointer'><span className="flex material-symbols-outlined">
-                                check_circle
-                            </span></button>
-                            <button onClick={removeTask} className='flex text-stone-300 hover:bg-stone-800 p-0.5 rounded-lg cursor-pointer'><span className="flex material-symbols-outlined">
-                                delete
-                            </span></button>
-                        </div>
-                    </div>
-                </div>
+                {
+                    Task.length === 0 ? (
+                        <div className='text-left mt-8 text-gray-200 font-semibold'>No tasks available</div>
+                    ) : (
+                        Task.map((item) =>
+
+                            <div id="task-box" className='mt-4'>
+                                {/* Tasks */}
+                                <div id="task" className='border border-stone-700 flex flex-row items-center justify-between gap-1.5 w-full py-2 px-2 rounded-lg' key={item.id}>
+                                    <div>
+                                        <p className='line-clamp-1 w-full text-wrap text-lg' ref={taskName}>{item.taskName}</p>
+                                        <p className='text-stone-500 font-semibold text-sm'>{item.timeStamp}</p>
+                                    </div>
+                                    <div className='flex flex-row items-center gap-1.5'>
+                                        <button onClick={completeTask} className='flex text-green-500 hover:bg-stone-800 p-0.5 rounded-lg cursor-pointer'><span className="flex material-symbols-outlined">
+                                            check_circle
+                                        </span></button>
+                                        <button onClick={removeTask} className='flex text-stone-300 hover:bg-stone-800 p-0.5 rounded-lg cursor-pointer'><span className="flex material-symbols-outlined">
+                                            delete
+                                        </span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    )
+                }
             </div>
         </div>
     )
