@@ -12,7 +12,7 @@ const UserInput: React.FC = () => {
         taskName: "",
         timeStamp: new Date().toUTCString(),
         id: Math.floor(Math.random() * 100000),
-        status: "Incomplete",
+        status: "incomplete",
     });
     // Input handler
     const InputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
