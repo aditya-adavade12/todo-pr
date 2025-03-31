@@ -23,7 +23,7 @@ const UserInput: React.FC = () => {
     }
     const AddTask = () => {
         if (!Task.taskName) {
-            alert("Please input valid field!");
+            alert("Please Provide a task name");
         } else {
             let tasks = JSON.parse(localStorage.getItem("Tasks") || "[]");
             tasks.push(Task);
